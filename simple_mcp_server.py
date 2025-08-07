@@ -1,15 +1,28 @@
+#!/usr/bin/env python3
 import asyncio
 import json
-from mcp.server import Server
-from mcp.types import Tool, TextContent
-from simple_chart_generator import SimpleChartGenerator
+import sys
+from typing import Any, Sequence
+
+try:
+    from mcp.server import Server
+    from mcp.types import Tool, TextContent
+except ImportError:
+    print("Error: MCP library not found. Please install with: pip install mcp", file=sys.stderr)
+    sys.exit(1)
+
+try:
+    from simple_chart_generator import SimpleChartGenerator
+except ImportError:
+    print("Error: simple_chart_generator module not found", file=sys.stderr)
+    sys.exit(1)
 
 # 创建MCP服务器实例
 server = Server("quick-chart-generator")
 chart_gen = SimpleChartGenerator()
 
 @server.list_tools()
-async def list_tools():
+async def list_tools() -> Sequence[Tool]:
     """列出可用的工具"""
     return [
         Tool(
@@ -55,10 +68,19 @@ async def list_tools():
     ]
 
 @server.call_tool()
-async def call_tool(name: str, arguments: dict):
+async def call_tool(name: str, arguments: dict) -> Sequence[TextContent]:
     """处理工具调用"""
     if name == "generate_chart":
         try:
+            # 验证输入参数
+            if not isinstance(arguments, dict):
+                raise ValueError("参数必须是字典格式")
+            
+            required_fields = ["chart_type", "title", "series"]
+            for field in required_fields:
+                if field not in arguments:
+                    raise ValueError(f"缺少必需字段: {field}")
+            
             # 生成图表HTML
             html_content = chart_gen.generate_chart(arguments)
             
@@ -117,14 +139,26 @@ async def call_tool(name: str, arguments: dict):
 
 async def main():
     """启动MCP服务器"""
-    from mcp.server.stdio import stdio_server
-    
-    async with stdio_server() as (read_stream, write_stream):
-        await server.run(
-            read_stream,
-            write_stream,
-            server.create_initialization_options()
-        )
+    try:
+        # 导入stdio_server
+        from mcp.server.stdio import stdio_server
+        
+        # 启动服务器
+        async with stdio_server() as (read_stream, write_stream):
+            await server.run(
+                read_stream,
+                write_stream,
+                server.create_initialization_options()
+            )
+    except Exception as e:
+        print(f"服务器启动失败: {e}", file=sys.stderr)
+        sys.exit(1)
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print("\n服务器已停止", file=sys.stderr)
+    except Exception as e:
+        print(f"服务器运行错误: {e}", file=sys.stderr)
+        sys.exit(1)

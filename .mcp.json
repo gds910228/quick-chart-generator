@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "quick-chart-generator": {
+      "command": "python",
+      "args": ["simple_mcp_server.py"],
+      "env": {
+        "PYTHONPATH": "."
+      }
+    }
+  }
+}

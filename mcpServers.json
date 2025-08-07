@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "quick-chart-generator": {
+      "args": [
+        "string"
+      ],
+      "command": "python",
+      "env": {
+        "key": "value"
+      }
+    }
+  }
+}

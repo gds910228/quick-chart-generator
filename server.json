@@ -1,0 +1,117 @@
+{
+  "name": "quick-chart-generator",
+  "version": "1.0.0",
+  "description": "快速图表生成器 - 基于MCP协议的可视化图表生成服务",
+  "author": "CodeBuddy",
+  "license": "MIT",
+  "category": "可视化图表",
+  "tags": ["图表", "可视化", "数据分析", "Chart.js", "HTML"],
+  "main": "simple_mcp_server.py",
+  "command": "python simple_mcp_server.py",
+  "requirements": {
+    "python": ">=3.7",
+    "packages": [
+      "mcp>=1.12.3"
+    ]
+  },
+  "tools": [
+    {
+      "name": "generate_chart",
+      "description": "根据提供的数据生成可视化图表，支持柱状图、折线图、饼图和表格",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "chart_type": {
+            "type": "string",
+            "enum": ["bar", "line", "pie", "table"],
+            "description": "图表类型: bar(柱状图), line(折线图), pie(饼图), table(表格)"
+          },
+          "title": {
+            "type": "string",
+            "description": "图表标题"
+          },
+          "x_axis": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": "X轴标签数组 (对饼图来说是分类名称，对表格来说是行标题)"
+          },
+          "series": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {"type": "string", "description": "系列名称"},
+                "data": {
+                  "type": "array",
+                  "items": {"type": "number"},
+                  "description": "数据数组"
+                }
+              },
+              "required": ["name", "data"]
+            },
+            "description": "数据系列数组"
+          }
+        },
+        "required": ["chart_type", "title", "series"]
+      }
+    }
+  ],
+  "examples": [
+    {
+      "name": "柱状图示例",
+      "description": "生成销售数据对比柱状图",
+      "tool": "generate_chart",
+      "input": {
+        "chart_type": "bar",
+        "title": "每月销售额对比",
+        "x_axis": ["一月", "二月", "三月", "四月", "五月"],
+        "series": [
+          {
+            "name": "产品A",
+            "data": [120, 200, 150, 80, 70]
+          },
+          {
+            "name": "产品B",
+            "data": [80, 90, 110, 130, 95]
+          }
+        ]
+      }
+    },
+    {
+      "name": "饼图示例", 
+      "description": "生成市场份额分布饼图",
+      "tool": "generate_chart",
+      "input": {
+        "chart_type": "pie",
+        "title": "浏览器市场份额",
+        "x_axis": ["Chrome", "Safari", "Firefox", "Edge", "其他"],
+        "series": [
+          {
+            "name": "市场份额",
+            "data": [65.2, 18.7, 9.1, 4.3, 2.7]
+          }
+        ]
+      }
+    },
+    {
+      "name": "表格示例",
+      "description": "生成数据汇总表格",
+      "tool": "generate_chart",
+      "input": {
+        "chart_type": "table",
+        "title": "销售数据汇总",
+        "x_axis": ["一月", "二月", "三月"],
+        "series": [
+          {
+            "name": "产品A销量",
+            "data": [120, 200, 150]
+          },
+          {
+            "name": "产品B销量",
+            "data": [80, 90, 110]
+          }
+        ]
+      }
+    }
+  ]
+}

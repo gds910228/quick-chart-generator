@@ -1,0 +1,29 @@
+{
+  "name": "quick-chart-generator",
+  "version": "1.0.0",
+  "description": "快速图表生成器 - 基于MCP协议的可视化图表生成服务",
+  "main": "simple_mcp_server.py",
+  "scripts": {
+    "start": "python simple_mcp_server.py",
+    "demo": "python demo.py",
+    "test": "python simple_test.py"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gds910228/quick-chart-generator.git"
+  },
+  "keywords": [
+    "mcp",
+    "chart",
+    "visualization",
+    "data-analysis",
+    "chartjs"
+  ],
+  "author": "CodeBuddy",
+  "license": "MIT",
+  "mcp": {
+    "server": "simple_mcp_server.py",
+    "tools": ["generate_chart"],
+    "category": "可视化图表"
+  }
+}
